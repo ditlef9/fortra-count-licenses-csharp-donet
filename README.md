@@ -2,11 +2,12 @@
 
 ![Logo](docs/fortra-count-licenses-csharp-donet-logo.png)
 
-**General overview**<br>
+**📕General overview**<br>
 Fortra Count Licenses is a tool developed to help organizations track and manage their license usage through the Fortra API. This application allows users to retrieve and analyze the license information associated with their accounts, providing insights such as active licenses, account metrics, and usage data. The goal of this project is to facilitate license management and improve operational efficiency by integrating with Fortra's API and offering a simple way to visualize and manage license data.
 
-**Excel Report**<br>
-A report will be generated with data for each customer.
+**𝄜 Excel Report**<br>
+A report will be generated with data for each customer (using the 
+[ClosedXML](https://github.com/ClosedXML/ClosedXML) library).
 Example:
 
 | ID  | Name                 | AccountStatus | AccountNumber | MaxAgents | AgentsUsed | ScanoptsAvMaxWindowSize | ScanoptsAvWindowSize | UsageSummary Agent Scanning Used | UsageSummary Agent Scanning Allowed | UsageSummary Vulnerability Management (Internal) Used | UsageSummary Vulnerability Management (Internal) Allowed |
@@ -17,13 +18,16 @@ Example:
 
 
 
-**Email**<br>
+**📥Email**<br>
 The report will be emailed to a receiver. 
 
 
-With an easy-to-use interface, the application allows users to fetch important data related to accounts and license counts, making it a valuable tool for system administrators, IT teams, and organizations looking to ensure compliance and optimize their licensing strategies.
+**Enviroments supported**<br>
 
-In this guide, you will learn how to run the application locally, deploy it to Azure, and understand the key components of the codebase.
+The application can run on:
+ * 💻 Locally on Windows, Mac and Linux
+ * 🌎 Google Cloud Run Functions with Secret Manager and Scheduler
+ * ☁️ Azure
 
 ---
 
@@ -31,9 +35,10 @@ In this guide, you will learn how to run the application locally, deploy it to A
 
 [🏠 1 How to run locally](#%EF%B8%8F-3-how-i-created-the-app)<br>
 [☁️ 2 How to deploy to Azure](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[🛠️ 3 How I created the app](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[👨🏻‍🏫 4 Application presentation](#-4-application-presentation)<br>
-[📜 5 License](#-5-license)<br>
+[🌎 3 How to deploy to Google Cloud](#%EF%B8%8F-3-how-i-created-the-app)<br>
+[🛠️ 4 How I created the app](#%EF%B8%8F-3-how-i-created-the-app)<br>
+[👨🏻‍🏫 5 Application presentation](#-4-application-presentation)<br>
+[📜 6 License](#-5-license)<br>
 
 ---
 
@@ -44,16 +49,24 @@ In this guide, you will learn how to run the application locally, deploy it to A
 - API Key from [Fortra (https://vm.se.frontline.cloud/)](https://vm.se.frontline.cloud/)
 
 ### Steps
-1. Clone this repository:
+
+**1. Clone this repository:**
    ```bash
    git clone https://github.com/ditlef9/fortra-count-licenses-csharp-donet.git
    cd fortra-count-licenses-csharp-donet
    ```
-2. Install dependencies (if any):
+**2. Install dependencies (if any):**
    ```bash
    dotnet restore
    ```
-3. Add ACCOUNT_ID and AUTH_TOKEN:
+
+**3. Decide how to read secrets:**<br>
+
+There are three methods of reading secrets.
+
+*3.a Enviroment variables (for testing purposes):*
+
+Add ACCOUNT_ID and AUTH_TOKEN:
 
     Linux:<br>
    ```csharp
@@ -66,7 +79,51 @@ In this guide, you will learn how to run the application locally, deploy it to A
    $env:ACCOUNT_ID="your_account_id"
    $env:AUTH_TOKEN="your_api_token"
    ```
-4. Run the application:
+
+
+*3.b Google Cloud Secret Manager*
+
+Add GOOGLE_CLOUD_PROJECT to enviroment variable
+
+    Windows:<br>
+   ```csharp
+   $env:GOOGLE_CLOUD_PROJECT="sindre-dev-439512"
+   ```
+
+Create a secret in Google Cloud > Secret Manager:
+
+* Name: fortra-count-licenses
+* Secret value:
+```
+{
+  "fortra_account_id": "12345",
+  "fortra_auth_token": "abcdefghiklmnopqrstuvwxyz",
+  "gmailer_google_service_account": {
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "client_email": "your-service-account@your-project.iam.gserviceaccount.com",
+    "client_id": "110012742384433576204",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%your-project.iam.gserviceaccount.com",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIB...dLMO3a\n-----END PRIVATE KEY-----\n",
+    "private_key_id": "some-random-id",
+    "project_id": "your-project",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "type": "service_account"
+  }
+}
+```
+* Locations: europe-north1
+* Labels: 
+   - app: fortra-count-licenses
+   - responsible: sindre
+
+
+*3.c Azure Key Vault*
+
+
+
+
+**4. Run the application:**
    ```bash
    dotnet run
    ```
@@ -95,7 +152,18 @@ In this guide, you will learn how to run the application locally, deploy it to A
 
 ---
 
-## 🛠️ 3 How I created the app
+
+## 🌎 3 How to deploy to Google Cloud
+
+To run locally with Google Cloud:
+```
+gcloud init
+gcloud auth application-default login
+```
+
+--- 
+
+## 🛠️ 4 How I created the app
 
 New console app:
 ```
@@ -106,13 +174,13 @@ Added `HttpClient` to call the OpenWeatherMap API, parsed JSON responses using `
 
 ---
 
-## 👨🏻‍🏫 4 Application presentation
+## 👨🏻‍🏫 5 Application presentation
 
 
 
 ---
 
-## 📜 5 License
+## 📜 6 License
 
 This project is licensed under the
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
