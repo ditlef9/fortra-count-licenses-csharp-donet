@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FortraAPICall.Services;
 using FortraCountLicenses.Services.Excel;
+using FortraCountLicenses.Utils.Email;
 using FortraCountLicenses.Utils.Secrets; 
 
 class Program
@@ -16,9 +17,18 @@ class Program
 
         // How to access secrets, either via GCP Secret Manager (we need GOOGLE_CLOUD_PROJECT set) ------------------
         Console.WriteLine($"{logHeadline} Howto access secret --------------------------------------");
-        var (fortraAccountId, fortraAuthToken, howToAccessSecrets) = SecretManagerHelper.AccessSecrets();
+        var (fortraAccountId, fortraAuthToken, emailFrom, emailTo, gmailerGoogleServiceAccountJson, howToAccessSecrets) = SecretManagerHelper.AccessSecrets();
         Console.WriteLine($"{logHeadline} fortraAccountId: {fortraAccountId}");
 
+
+        // Email -----------------------------------------------------------------------------------------------------
+        var gmailer = new Gmailer(gmailerGoogleServiceAccountJson, emailFrom);
+        await gmailer.SendEmailAsync(
+            emailTo: emailTo,
+            emailSubject: "Hello!",
+            emailContent: "<html><head></head><body><p>Hello, this is a test!</p></body></html>"
+        );
+        Console.WriteLine($"{logHeadline} Email sent.");
 
         // Call Fortra ----------------------------------------------------------------------------------------------
         Console.WriteLine($"{logHeadline} Call Fortra API --------------------------------------");
@@ -44,5 +54,6 @@ class Program
         excelCreator.CreateExcelFile(fortraAccountDataResponse.Results);
 
         Console.WriteLine($"{logHeadline} Excel file has been created successfully.");
+
     }
 }

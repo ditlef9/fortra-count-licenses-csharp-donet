@@ -2,6 +2,8 @@
 
 ![Logo](docs/fortra-count-licenses-csharp-donet-logo.png)
 
+ [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%209.0-red.svg)](#)
+
 **📕General overview**<br>
 Fortra Count Licenses is a tool developed to help organizations track and manage their license usage through the Fortra API. This application allows users to retrieve and analyze the license information associated with their accounts, providing insights such as active licenses, account metrics, and usage data. The goal of this project is to facilitate license management and improve operational efficiency by integrating with Fortra's API and offering a simple way to visualize and manage license data.
 
@@ -99,6 +101,8 @@ Create a secret in Google Cloud > Secret Manager:
 {
   "fortra_account_id": "12345",
   "fortra_auth_token": "abcdefghiklmnopqrstuvwxyz",
+  "emailFrom": "me@email.com",
+  "email_to": "me@email.com,you@email.com",
   "gmailer_google_service_account": {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",

@@ -1,6 +1,7 @@
 # Project files
 NotesDoNotCommit.txt
 _tmp/
+x.json
 
 # Build results
 bin/
