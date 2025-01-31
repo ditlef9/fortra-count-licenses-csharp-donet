@@ -1,6 +1,5 @@
-# Fortra Count Licenses C# dotnet
 
-![Logo](docs/fortra-count-licenses-csharp-donet-logo.png)
+![Fortra Count Licenses C# dotnet](docs/fortra-count-licenses-csharp-donet-logo.png)
 
  [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%209.0-red.svg)](#)
 

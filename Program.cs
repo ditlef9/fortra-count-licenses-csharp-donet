@@ -17,7 +17,7 @@ class Program
 
         // How to access secrets, either via GCP Secret Manager (we need GOOGLE_CLOUD_PROJECT set) ------------------
         Console.WriteLine($"{logHeadline} Howto access secret --------------------------------------");
-        var (fortraAccountId, fortraAuthToken, emailFrom, emailTo, gmailerGoogleServiceAccountJson, howToAccessSecrets) = SecretManagerHelper.AccessSecrets();
+        var (fortraAccountId, fortraAuthToken, emailFrom, emailTo, gmailerGoogleServiceAccountJson) = SecretManagerHelper.AccessSecrets();
         Console.WriteLine($"{logHeadline} fortraAccountId: {fortraAccountId}");
 
 

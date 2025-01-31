@@ -8,12 +8,11 @@ using FortraCountLicenses.Utils.GCP;
 
 public class SecretManagerHelper
 {
-    public static (string fortraAccountId, string fortraAuthToken, string emailFrom, string emailTo, string gmailerGoogleServiceAccountJson, string howToAccessSecrets) AccessSecrets()
+    public static (string fortraAccountId, string fortraAuthToken, string emailFrom, string emailTo, string gmailerGoogleServiceAccountJson) AccessSecrets()
     {
         string logHeadline = "SecretManagerHelper·AccessSecrets·";
         Console.WriteLine($"{logHeadline} How to access secret --------------------------------------");
 
-        string? howToAccessSecrets = null;
         string? fortraAccountId = null;
         string? fortraAuthToken = null;
         string? gmailerGoogleServiceAccountJson = null;
@@ -27,7 +26,6 @@ public class SecretManagerHelper
         if (!string.IsNullOrEmpty(googleCloudProjectId))
         {
             Console.WriteLine($"{logHeadline} Accessing Google Cloud Secret Manager");
-            howToAccessSecrets = "Google Cloud Secret Manager";
 
             var secretReader = new GoogleSecretManagerReader();
             string mySecret = secretReader.ReadSecret("fortra-count-licenses");
@@ -60,17 +58,9 @@ public class SecretManagerHelper
             {
                 throw new InvalidOperationException($"{logHeadline} Missing Env var ACCOUNT_ID, FORTRA_AUTH_TOKEN, EMAIL_FROM, EMAIL_TO");
             }
-            else
-            {
-                howToAccessSecrets = "Environment variables";
-            }
         }
 
-        if (string.IsNullOrEmpty(howToAccessSecrets))
-        {
-            throw new Exception($"{logHeadline} howToAccessSecrets not found.");
-        }
 
-        return (fortraAccountId, fortraAuthToken, emailFrom, emailTo, gmailerGoogleServiceAccountJson, howToAccessSecrets);
+        return (fortraAccountId, fortraAuthToken, emailFrom, emailTo, gmailerGoogleServiceAccountJson);
     }
 }
