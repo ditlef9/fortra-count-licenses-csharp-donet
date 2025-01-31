@@ -2,7 +2,24 @@
 
 ![Logo](docs/fortra-count-licenses-csharp-donet-logo.png)
 
+**General overview**<br>
 Fortra Count Licenses is a tool developed to help organizations track and manage their license usage through the Fortra API. This application allows users to retrieve and analyze the license information associated with their accounts, providing insights such as active licenses, account metrics, and usage data. The goal of this project is to facilitate license management and improve operational efficiency by integrating with Fortra's API and offering a simple way to visualize and manage license data.
+
+**Excel Report**<br>
+A report will be generated with data for each customer.
+Example:
+
+| ID  | Name                 | AccountStatus | AccountNumber | MaxAgents | AgentsUsed | ScanoptsAvMaxWindowSize | ScanoptsAvWindowSize | UsageSummary Agent Scanning Used | UsageSummary Agent Scanning Allowed | UsageSummary Vulnerability Management (Internal) Used | UsageSummary Vulnerability Management (Internal) Allowed |
+|-----|----------------------|---------------|---------------|-----------|------------|-------------------------|----------------------|---------------------------------|-------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
+| 1   | TechSolutions Inc.    | Active        | 100987654     | 50        | 30         | 5000                    | 4500                 | 25                              | 50                                  | 10                                                       | 40                                                         |
+| 2   | Global Enterprises    | Suspended     | 200876543     | 100       | 75         | 10000                   | 8500                 | 60                              | 100                                 | 35                                                       | 80                                                         |
+| 3   | FutureTech Ltd.       | Pending       | 300765432     | 75        | 45         | 7500                    | 7000                 | 40                              | 75                                  | 20                                                       | 60                                                         |
+
+
+
+**Email**<br>
+The report will be emailed to a receiver. 
+
 
 With an easy-to-use interface, the application allows users to fetch important data related to accounts and license counts, making it a valuable tool for system administrators, IT teams, and organizations looking to ensure compliance and optimize their licensing strategies.
 
