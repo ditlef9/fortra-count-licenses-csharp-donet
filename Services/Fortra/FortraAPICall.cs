@@ -12,26 +12,22 @@ using System.Text.Json;  // For System.Text.Json serialization
 
 public class FortraAPICall {
     private readonly HttpClient _httpClient;
+    private string _fortraAccountId;
+    private string _fortraAuthToken;
 
-    public FortraAPICall(HttpClient httpClient){
+    public FortraAPICall(HttpClient httpClient, string fortraAccountId, string fortraAuthToken){
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _fortraAccountId = fortraAccountId;
+        _fortraAuthToken = fortraAuthToken;
     }
 
     public async Task<FortraAccountDataResponse> CallAPI(){
-        string? accountId = Environment.GetEnvironmentVariable("ACCOUNT_ID");
-        string? authToken = Environment.GetEnvironmentVariable("AUTH_TOKEN");
 
-        if (string.IsNullOrEmpty(accountId)) {
-            throw new InvalidOperationException("FortraAPICall·CallAPI·Missing Env var ACCOUNT_ID");
-        }
-        if (string.IsNullOrEmpty(authToken)) {
-            throw new InvalidOperationException("FortraAPICall·CallAPI·Missing Env var AUTH_TOKEN");
-        }
 
-        string apiURL = $"https://vm.se.frontline.cloud/api/account/?account_id={accountId}";
+        string apiURL = $"https://vm.se.frontline.cloud/api/account/?account_id={_fortraAccountId}";
 
         using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, apiURL);
-        request.Headers.Add("Authorization", $"Token {authToken}");
+        request.Headers.Add("Authorization", $"Token {_fortraAuthToken}");
 
         HttpResponseMessage response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();

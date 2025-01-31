@@ -62,8 +62,8 @@ The application can run on:
 
 **3. Decide how to read secrets:**<br>
 
-There are three methods of reading secrets. They are Enviroment variables, Google Cloud Secret Manager and
-Azure Key Vault.
+There are three methods of reading secrets. They are `Enviroment variables`, `Google Cloud Secret Manager` or
+`Azure Key Vault`.
 
 *3.a Enviroment variables (for testing purposes):*
 
@@ -71,14 +71,14 @@ Add ACCOUNT_ID and AUTH_TOKEN:
 
 Linux:<br>
    ```csharp
-   export ACCOUNT_ID="your_account_id"
-   export AUTH_TOKEN="your_api_token"
+   export FORTRA_ACCOUNT_ID="your_account_id"
+   export FORTRA_AUTH_TOKEN="your_api_token"
    ```
    
 Windows:<br>
    ```csharp
-   $env:ACCOUNT_ID="your_account_id"
-   $env:AUTH_TOKEN="your_api_token"
+   $env:FORTRA_ACCOUNT_ID="your_account_id"
+   $env:FORTRA_AUTH_TOKEN="your_api_token"
    ```
 
 

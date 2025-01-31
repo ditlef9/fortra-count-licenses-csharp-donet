@@ -1,65 +1,48 @@
 ﻿// Program.cs
-
 namespace FortraCountLicenses;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FortraAPICall.Services;
 using FortraCountLicenses.Services.Excel;
-using FortraCountLicenses.Utils.GCP;
-using Newtonsoft.Json;
+using FortraCountLicenses.Utils.Secrets; 
 
-class Program{
+class Program
+{
     static async Task Main()
     {
-        Console.WriteLine("Program·Main·Starting API request...");
+        string logHeadline = "Program·Main·";
+        Console.WriteLine($"{logHeadline} Init...");
 
-        // How to access secrets, either via GCP Secret Manger (we need GOOGLE_CLOUD_PROJECT set)
-        string howToAccessSecrets  = "";
-        string? googleCloudProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
-        if (!string.IsNullOrEmpty(googleCloudProjectId))
+        // How to access secrets, either via GCP Secret Manager (we need GOOGLE_CLOUD_PROJECT set) ------------------
+        Console.WriteLine($"{logHeadline} Howto access secret --------------------------------------");
+        var (fortraAccountId, fortraAuthToken, howToAccessSecrets) = SecretManagerHelper.AccessSecrets();
+        Console.WriteLine($"{logHeadline} fortraAccountId: {fortraAccountId}");
+
+
+        // Call Fortra ----------------------------------------------------------------------------------------------
+        Console.WriteLine($"{logHeadline} Call Fortra API --------------------------------------");
+        if (fortraAccountId == null || fortraAuthToken == null)
         {
-            howToAccessSecrets = "Google Cloud Secret Manager";
-        }
-        if (howToAccessSecrets == ""){
-            throw new Exception("Program·Main·howToAccessSecrets not found.");
+            throw new Exception($"{logHeadline} Missing credentials for Fortra API call.");
         }
 
-
-
-
-        // Access GCP Secret
-        var secretReader = new GoogleSecretManagerReader();
-        string mySecret = secretReader.ReadSecret("fortra-count-licenses");
-
-        // Deserialize the JSON into SecretData class
-        SecretData secretData = JsonConvert.DeserializeObject<SecretData>(mySecret);
-        if (secretData == null)
-        {
-            throw new Exception("Error: Secret data could not be deserialized.");
-        }
-
-        Console.WriteLine($"Fortra Account ID: {secretData.FortraAccountId}");
-        Console.WriteLine($"Google Service Account Email: {secretData.GmailerGoogleServiceAccount.ClientEmail}");
-
-
-        // Call Fortra
         using var httpClient = new HttpClient();
-        var fortraAPICall = new FortraAPICall(httpClient);
+        var fortraAPICall = new FortraAPICall(httpClient, fortraAccountId, fortraAuthToken);
         FortraAccountDataResponse fortraAccountDataResponse = await fortraAPICall.CallAPI();
+        
         foreach (var result in fortraAccountDataResponse.Results)
         {
-            Console.WriteLine($"Program·Main·Found {result.Name} {result.AccountStatus ?? "N/A"} AccountType: {result.AccountType ?? "N/A"}");
+            Console.WriteLine($"{logHeadline} Found {result.Name} → {result.AccountStatus ?? "N/A"}");
         }
 
-        Console.WriteLine("Program·Main·API request completed.");
+        Console.WriteLine($"{logHeadline} API request completed.");
 
-        
-        // Generate the Excel file
+        // Generate the Excel file ----------------------------------------------------------------------------------
+        Console.WriteLine($"{logHeadline} Generate the Excel file -----------------------------");
         var excelCreator = new ExcelFileCreator();
         excelCreator.CreateExcelFile(fortraAccountDataResponse.Results);
 
-        Console.WriteLine("Excel file has been created successfully.");
-        
+        Console.WriteLine($"{logHeadline} Excel file has been created successfully.");
     }
 }
