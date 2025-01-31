@@ -62,19 +62,20 @@ The application can run on:
 
 **3. Decide how to read secrets:**<br>
 
-There are three methods of reading secrets.
+There are three methods of reading secrets. They are Enviroment variables, Google Cloud Secret Manager and
+Azure Key Vault.
 
 *3.a Enviroment variables (for testing purposes):*
 
 Add ACCOUNT_ID and AUTH_TOKEN:
 
-    Linux:<br>
+Linux:<br>
    ```csharp
    export ACCOUNT_ID="your_account_id"
    export AUTH_TOKEN="your_api_token"
    ```
    
-    Windows:<br>
+Windows:<br>
    ```csharp
    $env:ACCOUNT_ID="your_account_id"
    $env:AUTH_TOKEN="your_api_token"
@@ -85,7 +86,7 @@ Add ACCOUNT_ID and AUTH_TOKEN:
 
 Add GOOGLE_CLOUD_PROJECT to enviroment variable
 
-    Windows:<br>
+Windows:<br>
    ```csharp
    $env:GOOGLE_CLOUD_PROJECT="sindre-dev-439512"
    ```
