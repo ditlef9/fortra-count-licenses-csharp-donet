@@ -68,29 +68,25 @@ There are three methods of reading secrets. They are `Enviroment variables`, `Go
 
 *3.a Enviroment variables (for testing purposes):*
 
-Add ACCOUNT_ID and AUTH_TOKEN:
+Add enviroment variables:<br>
 
-Linux:<br>
-   ```csharp
-   export FORTRA_ACCOUNT_ID="your_account_id"
-   export FORTRA_AUTH_TOKEN="your_api_token"
-   ```
+```
+$env:FORTRA_ACCOUNT_ID="your_account_id"
+$env:FORTRA_AUTH_TOKEN="your_api_token"
+$env:EMAIL_FROM_ADDRESS="me@email.com",
+$env:EMAIL_FROM_NAME="Fortra Counting Service",
+$env:EMAIL_TO="me@email.com,you@email.com",
+```
+Linux should use the format `export FORTRA_ACCOUNT_ID="your_account_id"`.
    
-Windows:<br>
-   ```csharp
-   $env:FORTRA_ACCOUNT_ID="your_account_id"
-   $env:FORTRA_AUTH_TOKEN="your_api_token"
-   ```
-
 
 *3.b Google Cloud Secret Manager*
 
-Add GOOGLE_CLOUD_PROJECT to enviroment variable
+Add GOOGLE_CLOUD_PROJECT_ID to enviroment variable<br>
 
-Windows:<br>
-   ```csharp
-   $env:GOOGLE_CLOUD_PROJECT="sindre-dev-439512"
-   ```
+```
+$env:GOOGLE_CLOUD_PROJECT_ID="sindre-dev-439512"
+```
 
 Create a secret in Google Cloud > Secret Manager:
 
@@ -100,7 +96,8 @@ Create a secret in Google Cloud > Secret Manager:
 {
   "fortra_account_id": "12345",
   "fortra_auth_token": "abcdefghiklmnopqrstuvwxyz",
-  "emailFrom": "me@email.com",
+  "email_from_address": "me@email.com",
+  "email_from_name": "Fortra Count Licenses Service",
   "email_to": "me@email.com,you@email.com",
   "gmailer_google_service_account": {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
@@ -121,16 +118,35 @@ Create a secret in Google Cloud > Secret Manager:
    - app: fortra-count-licenses
    - responsible: sindre
 
+Run it locally with using Google Cloud Secret Manager requires login:
+```
+gcloud init
+gcloud auth application-default login
+```
 
 *3.c Azure Key Vault*
+
+Create a Key Vault in Azure:
+
+`az keyvault create --name "fortraKeyVault" --resource-group "yourResourceGroup" --location "westeurope"`
+
+Store secrets in the Key Vault:
+
+```
+az keyvault secret set --vault-name MyKeyVault --name "fortra_account_id" --value "12345"
+az keyvault secret set --vault-name MyKeyVault --name "fortra_auth_token" --value "abcdefghiklmnopqrstuvwxyz"
+az keyvault secret set --vault-name MyKeyVault --name "email_from_address" --value "me@email.com"
+az keyvault secret set --vault-name MyKeyVault --name "email_from_name" --value "Fortra Count Licenses Service"
+az keyvault secret set --vault-name MyKeyVault --name "email_to" --value "me@email.com,you@email.com"
+```
 
 
 
 
 **4. Run the application:**
-   ```bash
-   dotnet run
-   ```
+```bash
+dotnet run
+```
 
 
 ---
@@ -159,11 +175,32 @@ Create a secret in Google Cloud > Secret Manager:
 
 ## 🌎 3 How to deploy to Google Cloud
 
-To run locally with Google Cloud:
+**1 Create service account for sending emails**
+
+
+**2 Create a secret `fortra-count-licenses`**:<br>
+Google Cloud > Secret Manager > + New. See the format at *1 How to run locally -> 3.b Google Cloud Secret Manager*.
+
+**3 Deploy to Google Cloud Run Functions:**<br>
+
 ```
-gcloud init
-gcloud auth application-default login
+# See your dotnet version
+dotnet --version
+
+# Login to GCP
+gcloud auth login
+
+# Deploy the application
+gcloud functions deploy fortra-count-licenses --gen2 --runtime=dotnet9 --region=europe-north1 --source=. --entry-point=FortraCountLicenses.Program --trigger-http --timeout=540 --verbosity=info --project=sindre-dev-439512 --set-env-vars=GOOGLE_CLOUD_PROJECT_ID=sindre-dev-439512
 ```
+
+Get the URL to the Google Cloud Run Function here: 
+https://console.cloud.google.com/functions/details/europe-north1/fortra-count-licenses?project=sindre-dev-439512
+
+**4 Add scheduler:**<br>
+Google Cloud > Schedulerer > + New
+
+Point it to the Google Cloud Run Function URL.
 
 --- 
 
@@ -171,15 +208,62 @@ gcloud auth application-default login
 
 New console app:
 ```
-dotnet new console -n WeatherApp
+dotnet new console -n FortraCountLicenses
 ```
 
-Added `HttpClient` to call the OpenWeatherMap API, parsed JSON responses using `System.Text.Json`, and formatted the output to display weather details in the console.
+
 
 ---
 
 ## 👨🏻‍🏫 5 Application presentation
 
+
+### 5.1 **Fortra Count Licenses – Automating License Tracking & Reporting**  
+
+**Fortra Count Licenses** is a lightweight and efficient tool designed to help organizations **track, analyze, and manage** their license usage with Fortra’s API. This application automatically retrieves license data, generates an **Excel report**, and sends it via **email**—all in a fully automated workflow.  
+
+With support for **Google Cloud Run, Azure**, and local execution, this tool integrates seamlessly into existing infrastructures. It provides visibility into **active licenses, usage data, and account statuses**, helping businesses optimize their license consumption.  
+
+---
+
+### 5.2 🚀 **Key Features**  
+
+✅ **Automated API Integration** – Retrieves real-time license data from Fortra’s API.  
+✅ **Excel Reporting** – Generates detailed reports using **ClosedXML** for easy analysis.  
+✅ **Email Notifications** – Sends reports automatically to specified recipients.  
+✅ **Secure Secret Management** – Uses **Google Cloud Secret Manager** or **Azure Key Vault** for credentials.  
+✅ **Multi-Cloud Support** – Deployable on **Google Cloud Run Functions** and **Azure App Services**.  
+✅ **Flexible Execution** – Run locally on **Windows, Mac, and Linux**.  
+✅ **Scheduler Integration** – Automate execution using **Google Cloud Scheduler** or **Azure Functions Timer Triggers**.  
+
+---
+
+### 5.3 📊 **How It Works**  
+
+1️⃣ **Retrieves Credentials & API Keys**  
+   - Reads secrets from **Google Cloud Secret Manager**, **Azure Key Vault**, or **environment variables**.  
+
+2️⃣ **Calls Fortra’s API**  
+   - Fetches license data and account status information.  
+
+3️⃣ **Processes & Formats Data**  
+   - Structures the data into a clean, easy-to-read format.  
+
+4️⃣ **Generates an Excel Report**  
+   - Uses **ClosedXML** to create an Excel file with license details.  
+
+5️⃣ **Sends Email with the Report**  
+   - Uses **Gmail API** to deliver the report to configured recipients.  
+
+---
+
+### 5.4 🎯 **Use Cases**  
+
+💼 **IT Asset Management** – Monitor software licenses and prevent overuse.  
+📈 **Compliance & Auditing** – Ensure proper license tracking for audits.  
+🔄 **Operational Efficiency** – Automate reporting and reduce manual tracking.  
+
+Fortra Count Licenses simplifies license tracking, **reducing manual effort** and ensuring compliance across organizations. 🚀
 
 
 ---

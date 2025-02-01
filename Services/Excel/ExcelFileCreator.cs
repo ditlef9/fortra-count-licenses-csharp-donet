@@ -10,7 +10,7 @@ namespace FortraCountLicenses.Services.Excel;
 
 public class ExcelFileCreator
 {
-    public void CreateExcelFile(List<Result> results)
+    public string CreateExcelFile(List<Result> results)
     {
         var workbook = new XLWorkbook();
         var worksheet = workbook.AddWorksheet("Account Data");
@@ -64,5 +64,7 @@ public class ExcelFileCreator
         var filePath = "_tmp/FortraAccountData.xlsx";
         workbook.SaveAs(filePath);
         Console.WriteLine($"Excel file saved as '{filePath}'");
+
+        return filePath;
     }
 }
