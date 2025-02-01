@@ -1,5 +1,12 @@
-﻿// Program.cs
-namespace FortraCountLicenses;
+// Program.cs
+
+
+using Google.Cloud.Functions.Framework;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,11 +14,20 @@ using FortraAPICall.Services;
 using FortraCountLicenses.Services.Excel;
 using FortraCountLicenses.Utils.Email;
 using FortraCountLicenses.Utils.Secrets; 
+using DotNetEnv;
 
-class Program
+namespace HelloHttp;
+
+public class Function : IHttpFunction
 {
-    static async Task Main()
+  private readonly ILogger _logger;
+
+  public Function(ILogger<Function> logger) =>
+    _logger = logger;
+
+    public async Task HandleAsync(HttpContext context)
     {
+        Env.Load();
         string logHeadline = "Program·Main·";
         Console.WriteLine($"{logHeadline} Init...");
 
@@ -22,8 +38,6 @@ class Program
         // Console.WriteLine($"{logHeadline} gmailerGoogleServiceAccount.ClientEmail: {gmailerGoogleServiceAccount.ClientEmail}");
 
 
-
-
         // Call Fortra ----------------------------------------------------------------------------------------------
         Console.WriteLine($"{logHeadline} Call Fortra API --------------------------------------");
         if (fortraAccountId == null || fortraAuthToken == null)
@@ -32,7 +46,8 @@ class Program
         }
 
         using var httpClient = new HttpClient();
-        var fortraAPICall = new FortraAPICall(httpClient, fortraAccountId, fortraAuthToken);
+        var fortraAPICall = new FortraAPICall.Services.FortraAPICall(httpClient, fortraAccountId, fortraAuthToken);
+
         FortraAccountDataResponse fortraAccountDataResponse = await fortraAPICall.CallAPI();
         
         foreach (var result in fortraAccountDataResponse.Results)
@@ -42,12 +57,15 @@ class Program
 
         Console.WriteLine($"{logHeadline} API request completed.");
 
+
         // Generate the Excel file ----------------------------------------------------------------------------------
         Console.WriteLine($"{logHeadline} Generate the Excel file -----------------------------");
         var excelCreator = new ExcelFileCreator();
         string excelFilePath = excelCreator.CreateExcelFile(fortraAccountDataResponse.Results);
         Console.WriteLine($"{logHeadline} Excel file has been created successfully at {excelFilePath}.");
         byte[] excelFileBytes = File.ReadAllBytes(excelFilePath);
+
+
 
         // Email -----------------------------------------------------------------------------------------------------
         
@@ -125,9 +143,10 @@ class Program
             );
             
             Console.WriteLine($"{logHeadline} Email sent to {trimmedEmail}.");
-        }
+        } // foreach email receipient
 
 
-
+        // Return
+        await context.Response.WriteAsync($"Hello !");
     }
 }
