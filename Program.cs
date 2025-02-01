@@ -7,7 +7,6 @@ using FortraAPICall.Services;
 using FortraCountLicenses.Services.Excel;
 using FortraCountLicenses.Utils.Email;
 using FortraCountLicenses.Utils.Secrets; 
-using Google.Cloud.Functions.Framework;
 
 class Program
 {

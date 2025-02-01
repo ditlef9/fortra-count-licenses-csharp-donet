@@ -11,10 +11,10 @@ public class GoogleSecretManagerReader
         try
         {
             // Get the project ID from environment variable
-            string? projectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
+            string? projectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT_ID");
             if (string.IsNullOrEmpty(projectId))
             {
-                throw new Exception("Project ID not found. Set the 'GOOGLE_CLOUD_PROJECT' environment variable.");
+                throw new Exception("Project ID not found. Set the 'GOOGLE_CLOUD_PROJECT_ID' environment variable.");
             }
 
             // Create the client

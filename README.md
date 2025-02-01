@@ -181,7 +181,53 @@ dotnet run
 **2 Create a secret `fortra-count-licenses`**:<br>
 Google Cloud > Secret Manager > + New. See the format at *1 How to run locally -> 3.b Google Cloud Secret Manager*.
 
-**3 Deploy to Google Cloud Run Functions:**<br>
+
+**3 Create a Docker repository in Artifact Registry and a Cloud Build bucket:**<br>
+
+```commandline
+gcloud artifacts repositories create docker-repo --repository-format=docker --location=europe-north1 --description="Docker repository" --project=sindre-dev-439512
+
+gcloud artifacts repositories list --project=sindre-dev-439512
+
+gcloud storage buckets create gs://sindre-dev-439512_cloudbuild --location=europe-north1 --project=sindre-dev-439512
+```
+
+
+**Create a Dockerfile**<br>
+```
+# Locally:
+docker build -t fortra-count-licenses .
+
+# To Google Cloud:
+gcloud builds submit --region=europe-north1 --tag europe-north1-docker.pkg.dev/sindre-dev-439512/docker-repo/fortra-count-licenses .  --project=sindre-dev-439512
+
+```
+
+The Docker image should be available here:
+https://console.cloud.google.com/artifacts/docker/sindre-dev-439512/europe-north1/docker-repo?project=sindre-dev-439512
+
+
+**3 Deploy to Google Cloud Run:**<br>
+
+Google Cloud > Cloud Run > [Create Service] 
+
+* [v] Deploy one revision from an existing container image
+* Container image URL: europe-north1-docker.pkg.dev/sindre-dev-439512/docker-repo/fortra-count-licenses@sha256:e3bd850f8059f473009b7b487b8f9315feffe6d0bf9e772288982c6ba2f79daa
+* Region: europe-north1
+* Authentication: Require autoentication
+* Billing: Request based
+* Ingress: All
+
+Containers:
+* Settings:
+   * Revision scaling
+      * Minimum number of instances: 0
+      * Maximum number of instances: 1
+
+* Variables & Secrets:
+   * Enviroment variables:
+      * GOOGLE_CLOUD_PROJECT_ID = sindre-dev-439512
+   * Request timeout: 3600 (seconds)
 
 ```
 # See your dotnet version
@@ -191,7 +237,7 @@ dotnet --version
 gcloud auth login
 
 # Deploy the application
-gcloud functions deploy fortra-count-licenses --gen2 --runtime=dotnet9 --region=europe-north1 --source=. --entry-point=FortraCountLicenses.Program --trigger-http --timeout=540 --verbosity=info --project=sindre-dev-439512 --set-env-vars=GOOGLE_CLOUD_PROJECT_ID=sindre-dev-439512
+gcloud functions deploy fortra-count-licenses --gen2 --runtime=dotnet8 --region=europe-north1 --source=. --entry-point=FortraCountLicenses.Program --trigger-http --timeout=540 --verbosity=info --project=sindre-dev-439512 --set-env-vars=GOOGLE_CLOUD_PROJECT_ID=sindre-dev-439512
 ```
 
 Get the URL to the Google Cloud Run Function here: 
@@ -210,6 +256,7 @@ New console app:
 ```
 dotnet new console -n FortraCountLicenses
 ```
+
 
 
 
