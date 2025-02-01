@@ -34,12 +34,12 @@ The application can run on:
 
 ## Index
 
-[🏠 1 How to run locally](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[☁️ 2 How to deploy to Azure](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[🌎 3 How to deploy to Google Cloud](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[🛠️ 4 How I created the app](#%EF%B8%8F-3-how-i-created-the-app)<br>
-[👨🏻‍🏫 5 Application presentation](#-4-application-presentation)<br>
-[📜 6 License](#-5-license)<br>
+[🏠 1 How to run locally](#-1-how-to-run-locally)<br>
+[☁️ 2 How to deploy to Azure](#%EF%B8%8F-2-how-to-deploy-to-azure)<br>
+[🌎 3 How to deploy to Google Cloud](#-3-how-to-deploy-to-google-cloud)<br>
+[🛠️ 4 How I created the app](#%EF%B8%8F-4-how-i-created-the-app)<br>
+[👨🏻‍🏫 5 Application presentation](#-5-application-presentation)<br>
+[📜 6 License](#-6-license)<br>
 
 ---
 
