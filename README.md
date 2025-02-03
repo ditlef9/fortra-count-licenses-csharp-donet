@@ -1,6 +1,8 @@
 
 ![Fortra Count Licenses C# dotnet](docs/fortra-count-licenses-csharp-donet-logo.png)
 
+Created by S. Ditlefsen
+
  [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%209.0-red.svg)](#)
 
 **📕General overview**<br>
