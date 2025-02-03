@@ -1,9 +1,9 @@
 
 ![Fortra Count Licenses C# dotnet](docs/fortra-count-licenses-csharp-donet-logo.png)
 
-Created by S. Ditlefsen
+ [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%208.0-red.svg)](#)
 
- [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-%3E%3D%209.0-red.svg)](#)
+Created by S. Ditlefsen
 
 **📕General overview**<br>
 Fortra Count Licenses is a tool developed to help organizations track and manage their license usage through the Fortra API. This application allows users to retrieve and analyze the license information associated with their accounts, providing insights such as active licenses, account metrics, and usage data. The goal of this project is to facilitate license management and improve operational efficiency by integrating with Fortra's API and offering a simple way to visualize and manage license data.
